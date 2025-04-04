@@ -38,7 +38,7 @@ class Cell(Mesh):
 
         self.mold_history = Scent(dimx, dimy, mold_D, mold_dx, mold_dt,
                                   mold_decay_rate, maze, fill_avail_scent)
-        self.explore_fn = lambda x, y: -self.mold_history.get_scent(x, y)
+        self.explore_fn = lambda x, y: -1 * self.mold_history.get_scent(x, y)
         self.threshold = 0.01
         self.is_exploring = False
 
@@ -93,6 +93,10 @@ class Cell(Mesh):
         """
         Pick the outer pixel to fill the cell
         """
+        # remove outer indices that are walled by the maze
+        outer_idxs = [idx for idx in outer_idxs
+                      if self.fill_avail(idx[0], idx[1])]
+
         fn = self.explore_fn if self.is_exploring else self.sense_fn
         sorted_outer_idxs = sorted(outer_idxs, key=lambda xy: fn(xy[0], xy[1]),
                                    reverse=True)
@@ -148,8 +152,11 @@ class Cell(Mesh):
             # every point that you are active add to mold history
             filled_idxs = np.argwhere(self.data > 0).tolist()
             for x, y in filled_idxs:
-                self.mold_history.drop_particle(x, y, 10)
+                self.mold_history.drop_particle(x, y, 1)
             self.mold_history.update()
+
+        # print(self.mold_history.data)
+
 
 class Scent(Mesh):
 
@@ -194,9 +201,7 @@ class Scent(Mesh):
         Drop a particle at the given position
         """
         if self.fill_avail(x, y):
-            if self.data[x, y] == 0:
-                self.data[x, y] = amount
-            # self.data[x, y] += amount
+            self.data[x, y] += amount
 
     def update(self) -> None:
         # diffuse the food scent using Fick's law
@@ -204,10 +209,10 @@ class Scent(Mesh):
             for y in range(self.dimy):
                 if not self.fill_avail(x, y):
                     continue
-                
+
                 laplacian = self.compute_laplacian(x, y)
                 self.data[x, y] += self.diffusion_rate * laplacian * self.dt
-                self.data[x, y] -= self.decay_rate * self.data[x, y]
+                self.data[x, y] -= self.decay_rate * self.dt * self.data[x, y]
                 self.data[x, y] = max(self.data[x, y], 0)
 
     def get_scent(self, x: int, y: int) -> float:

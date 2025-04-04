@@ -12,17 +12,17 @@ class Game:
     background = [0, 0, 0]
     col_grid = [30, 30, 60]
 
-    cell_pattern = np.ones((5, 5))
+    cell_pattern = np.ones((3, 3))
 
     food_D = 0.5
     food_decay = 0
     food_dx = 0.1
-    food_dt = 0.9 * (food_dx**2 / (4*food_D)) if food_D > 0 else 1e-5
+    food_dt = 0.9 * (food_dx**2 / (4*food_D)) if food_D > 0 else 1e-3
 
-    mold_D = 0.001
-    mold_decay = 0.01
+    mold_D = 0
+    mold_decay = 0.05
     mold_dx = 0.1
-    mold_dt = 0.9 * (mold_dx**2 / (4*mold_D)) if mold_D > 0 else 1e-5
+    mold_dt = 0.9 * (mold_dx**2 / (4*mold_D)) if mold_D > 0 else 1e-3
 
     def cell_beyond_grid(dimx: int, dimy: int, pos: Tuple[int, int]) -> bool:
         return (pos[0] < 0) | (pos[0]+Game.cell_pattern.shape[0] >= dimx) | \
@@ -88,7 +88,6 @@ class Game:
         self.dimx, self.dimy = dimx, dimy
         self.cellsize = cellsize
         self.maze = Game.generate_maze(self.dimx, self.dimy)
-        # self.maze = np.zeros((self.dimx, self.dimy))
 
         self.food_scent = Scent(self.dimx, self.dimy,
                                 Game.food_D, Game.food_dx, Game.food_dt,

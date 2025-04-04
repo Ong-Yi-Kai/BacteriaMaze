@@ -3,8 +3,8 @@ import pygame
 
 
 if __name__ == "__main__":
-    game = Game(num_cells=5, food_pos=[(25,25), (25,75), (75, 25), (75,75)],
-                dimx=100, dimy=100, cellsize=2)
+    game = Game(num_cells=5, food_pos=[(75,75), (25, 25)],
+                dimx=100, dimy=100, cellsize=4)
 
     paused = False
     while True:
