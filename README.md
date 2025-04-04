@@ -1,8 +1,10 @@
 # Bacteria Maze
 
-![1743794546684](image/README/1743794546684.png)
+<p align='center'>
+  <img src="image/README/1743794546684.png" />
+</p>
 
-Uses bacteria like movement and chemotaxis to get agents to navigate a maze to the food.
+This simulation uses bacteria-like movement and chemotaxis to get agents to navigate a maze.
 
 The bacteria are represented by the worm like objects in the maze. To move, each agent would select an occupied pixel that has a poor value to remove and would select an empty pixel with a good value to add, while maintaining connectedness of the pixels it is occupying.
 
